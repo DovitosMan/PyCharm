@@ -1,23 +1,67 @@
+import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
+from sklearn import preprocessing
+from sklearn.decomposition import PCA
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.feature_selection import  SelectFromModel
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.model_selection import train_test_split
+
+# import dataset
 df = pd.read_csv('/Users/dovitosman/Documents/GitHub/Python/pythonProject/csv/glass.csv')
-X = df.drop('Type', axis=1)
-y = df['Type']
+var_names = list(df.columns)
+labels = df.to_numpy('int')[:, -1]  # метки классов
+data = df.to_numpy('float')[:, :-1]  # описательные признаки
+data = preprocessing.minmax_scale(data)
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20)
-
-clf = DecisionTreeClassifier()
-y_pred = clf.fit(X_train, y_train).predict(X_test)
-print((y_test != y_pred).sum())
-# from sklearn.metrics import classification_report, confusion_matrix
-# print(confusion_matrix(y_test, y_pred))
-# print(classification_report(y_test, y_pred))
-
-print(accuracy_score(y_test, y_pred))
-print(clf.tree_.max_depth)
-print(clf.tree_.n_leaves)
-
-plt.subplots(1, 1, figsize=(10, 10))
-tree.plot_tree(clf, filled=True)
+# make plots
+fig, axs = plt.subplots(2, 4)
+for i in range(data.shape[1] - 1):
+    axs[i // 4, i % 4].scatter(data[:, i], data[:, (i + 1)], c=labels, cmap='hsv')
+    axs[i // 4, i % 4].set_xlabel(var_names[i])
+    axs[i // 4, i % 4].set_ylabel(var_names[i + 1])
 plt.show()
+
+# PCA components
+pca = PCA(n_components=4)
+pca_data = pca.fit_transform(data)
+print(pca.explained_variance_ratio_)
+
+# print(pca.singular_values_)
+plt.scatter(pca_data[:, 0], pca_data[:, 1], c=labels, cmap='hsv')
+plt.show()
+
+# 1st PCA
+cdf = pca_data
+new_cdf = np.insert(cdf, 4, [labels], axis=1)
+print(new_cdf)
+X1 = new_cdf[:, :-1]
+y = new_cdf[:, -1]
+X1_train, X1_test, y1_train, y1_test = train_test_split(X1, y, test_size=0.2)
+sl = RandomForestRegressor(n_estimators=100, oob_score=True, random_state=1)
+sl.fit(X1_train, y1_train)
+a = sl.predict(X1_test)
+
+# 2nd PCA
+cdf1 = data
+new_cdf1 = np.insert(cdf1, 9, [labels], axis=1)
+X2 = new_cdf1[:, :-1]
+y1 = new_cdf1[:, -1]
+X2_train, X2_test, y2_train, y2_test = train_test_split(X2, y1, test_size=0.2)
+sel = RandomForestRegressor(n_estimators=100, oob_score=True, random_state=1)
+sel.fit(X2_train, y2_train)
+a1 = sel.predict(X2_test)
+
+plt.subplot(1, 2, 1)
+plt.scatter(y2_test, a1, color="red")
+plt.title('1st')
+plt.subplot(1, 2, 2)
+plt.title('2nd')
+plt.scatter(y1_test, a, color="yellow")
+plt.show()
+
+print('Accurancy on training set до PCA :', (sel.score(X2_train, y2_train)))
+print('Accurancy on test_set до PCA :', (sel.score(X2_test, y2_test)))
+
+print('Accurancy on training set после PCA :', (sl.score(X1_train, y1_train)))
+print('Accurancy on test_set после PCA :', (sl.score(X1_test, y1_test)))
