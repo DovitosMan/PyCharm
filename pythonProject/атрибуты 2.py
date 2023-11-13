@@ -9,9 +9,10 @@ class Person():
         self.money = newmoney
 
 
+
 obj1 = Person()
 obj2 = Person()
-obj1.name = 'Bob'
+obj1.name = 'Bobs'
 obj2.name = 'Masha'
 obj1.out()
 obj2.out()
