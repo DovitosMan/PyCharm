@@ -36,17 +36,17 @@ cdf = pca_data
 new_cdf = np.insert(cdf,4, [labels],axis = 1)
 X = new_cdf[:,:-1]
 y = new_cdf[:,-1]
-train_X, test_X, train_y, test_y = train_test_split(X,y, test_size= 0.2)
+X_train, X_test, y_train, y_test = train_test_split(X,y, test_size= 0.2)
 
 # обращение к дереву
 clf = tree.DecisionTreeClassifier(criterion='entropy', max_depth=3)
 get_n_leaves = 6
-clf.fit(train_X, train_y)
-y_pred =clf.predict(test_X)
+clf.fit(X_train, y_train)
+y_pred =clf.predict(X_test)
 
 # Проверка
-print('Accurancy on training set :',format(clf.score(train_X, train_y)))
-print('Accurancy on test_set:',format(clf.score(test_X,test_y)))
+print('Accurancy on training set :',format(clf.score(X_train, y_train)))
+print('Accurancy on test_set:',format(clf.score(X_test, y_test)))
 # Итоговое дерево
 plt.subplots(1,1, figsize = (25,25))
 tree.plot_tree(clf, filled = True, fontsize=15)

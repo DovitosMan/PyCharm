@@ -35,29 +35,29 @@ cdf = pca_data
 new_cdf = np.insert(cdf, 4, [labels], axis=1)
 # print(new_cdf)
 X1 = new_cdf[:, :-1]
-y = new_cdf[:, -1]
-X1_train, X1_test, y1_train, y1_test = train_test_split(X1, y, test_size=0.2)
+y1 = new_cdf[:, -1]
+X1_train, X1_test, y1_train, y1_test = train_test_split(X1, y1, test_size=0.2)
 sl = RandomForestRegressor(n_estimators=100, oob_score=True, random_state=1)
 sl.fit(X1_train, y1_train)
-a = sl.predict(X1_test)
+a1 = sl.predict(X1_test)
 
 # новые данные на обучение и тест 2PCA
 cdf1 = data
 new_cdf1 = np.insert(cdf1, 9, [labels], axis=1)
 X2 = new_cdf1[:, :-1]
-y1 = new_cdf1[:, -1]
-X2_train, X2_test, y2_train, y2_test = train_test_split(X2, y1, test_size=0.2)
+y2 = new_cdf1[:, -1]
+X2_train, X2_test, y2_train, y2_test = train_test_split(X2, y2, test_size=0.2)
 sel = RandomForestRegressor(n_estimators=100, oob_score=True, random_state=1)
 sel.fit(X2_train, y2_train)
-a1 = sel.predict(X2_test)
+a2 = sel.predict(X2_test)
 
 # плоты после снижения размерности
 plt.subplot(1, 2, 1)
-plt.scatter(y2_test, a1, color="red")
+plt.scatter(y2_test, a2, color="red")
 plt.title('1st')
 plt.subplot(1, 2, 2)
 plt.title('2nd')
-plt.scatter(y1_test, a, color="yellow")
+plt.scatter(y1_test, a1, color="yellow")
 plt.show()
 # Проверка до
 print('Accurancy on training set before PCA :', (sel.score(X2_train, y2_train)))
