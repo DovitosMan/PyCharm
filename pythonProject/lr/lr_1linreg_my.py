@@ -3,8 +3,8 @@ import pandas as pd
 from sklearn.linear_model import LinearRegression
 data = pd.read_csv('/Users/dovitosman/Documents/GitHub/Python/pythonProject/csv/cost_revenue_clean.csv')
 # print(data.describe())
-print(data)
-#
+# print(data)
+
 x = pd.DataFrame(data.production_budget_usd)
 y = pd.DataFrame(data.worldwide_gross_usd)
 model = LinearRegression().fit(x, y)
