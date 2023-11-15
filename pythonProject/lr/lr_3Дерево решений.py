@@ -8,9 +8,9 @@ from sklearn.model_selection import train_test_split
 
 # import dataset
 df = pd.read_csv('/Users/dovitosman/Documents/GitHub/Python/pythonProject/csv/glass.csv')
-var_names = list(df.columns) #получение названий столбцов
-labels = df.to_numpy('int')[:,-1] #последней цифры
-data = df.to_numpy('float')[:,:-1] #информация о строках
+var_names = list(df.columns)  # получение названий столбцов
+labels = df.to_numpy('int')[:, -1]  # последней цифры
+data = df.to_numpy('float')[:, :-1]  # информация о строках
 data = preprocessing.minmax_scale(data)
 
 # make plots
@@ -23,9 +23,9 @@ data = preprocessing.minmax_scale(data)
 # plt.show()
 
 # PCA components
-pca = PCA(n_components =4)
+pca = PCA(n_components=4)
 pca_data = pca.fit(data).transform(data)
-print(sum(pca.explained_variance_ratio_),' д.ед.')
+print(sum(pca.explained_variance_ratio_), ' д.ед.')
 
 # print(pca.singular_values_)
 # plt.scatter(pca_data[:,0],pca_data[:,1],c=labels,cmap='hsv',)
@@ -33,21 +33,21 @@ print(sum(pca.explained_variance_ratio_),' д.ед.')
 
 # новые данные на обучение и тест
 cdf = pca_data
-new_cdf = np.insert(cdf,4, [labels],axis = 1)
-X = new_cdf[:,:-1]
-y = new_cdf[:,-1]
-X_train, X_test, y_train, y_test = train_test_split(X,y, test_size= 0.2)
+new_cdf = np.insert(cdf, 4, [labels], axis=1)
+X = new_cdf[:, :-1]
+y = new_cdf[:, -1]
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
 # обращение к дереву
 clf = tree.DecisionTreeClassifier(criterion='entropy', max_depth=3)
 get_n_leaves = 6
 clf.fit(X_train, y_train)
-y_pred =clf.predict(X_test)
+y_pred = clf.predict(X_test)
 
 # Проверка
-print('Accurancy on training set :',format(clf.score(X_train, y_train)))
-print('Accurancy on test_set:',format(clf.score(X_test, y_test)))
+print('Accurancy on training set :', format(clf.score(X_train, y_train)))
+print('Accurancy on test_set:', format(clf.score(X_test, y_test)))
 # Итоговое дерево
-plt.subplots(1,1, figsize = (25,25))
-tree.plot_tree(clf, filled = True, fontsize=15)
+plt.subplots(1, 1, figsize=(25, 25))
+tree.plot_tree(clf, filled=True, fontsize=15)
 plt.show()
