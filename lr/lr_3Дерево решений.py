@@ -39,8 +39,7 @@ y = new_cdf[:, -1]
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
 # обращение к дереву
-clf = tree.DecisionTreeClassifier(criterion='entropy', max_depth=3)
-get_n_leaves = 6
+clf = tree.DecisionTreeClassifier(criterion='entropy', max_leaf_nodes=6)
 clf.fit(X_train, y_train)
 y_pred = clf.predict(X_test)
 

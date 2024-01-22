@@ -2,6 +2,7 @@ import pandas as pd
 from sklearn import preprocessing
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
+
 df = pd.read_csv('/Users/dovitosman/Documents/GitHub/Python/pythonProject/csv/glass.csv')
 var_names = list(df.columns)  # получение имен признаков
 labels = df.to_numpy('int')[:, -1]  # метки классов
